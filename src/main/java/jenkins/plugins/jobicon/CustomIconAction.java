@@ -18,6 +18,11 @@ package jenkins.plugins.jobicon;
 import hudson.FilePath;
 import hudson.model.Action;
 import hudson.model.Job;
+import jenkins.model.Jenkins;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
+
+import javax.servlet.ServletException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,19 +30,15 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import javax.servlet.ServletException;
-import jenkins.model.Jenkins;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
 
 /**
  * This action add {@code /customIcon/} to the job URL space and serve the
  * icon image.
- * 
+ *
  * This action accepts the query parameter {@code size} with these
  * acceptable values {@code 16x16}, {@code 24x24} and {@code 32x32}. If this
  * query parameter is present the icon image is resized before being served.
- * 
+ *
  * @author Jean-Christophe Sirot
  */
 public class CustomIconAction implements Action
@@ -47,7 +48,7 @@ public class CustomIconAction implements Action
 
 	/**
 	 * Creates a new {@code CustomIconAction}.
-	 * 
+	 *
 	 * @param job the owner job
 	 */
 	public CustomIconAction(Job job)
@@ -56,19 +57,16 @@ public class CustomIconAction implements Action
 		this.cache = new HashMap<Integer, byte[]>();
 	}
 
-	@Override
 	public String getIconFileName()
 	{
 		return null;
 	}
 
-	@Override
 	public String getDisplayName()
 	{
 		return "Custom Icon";
 	}
 
-	@Override
 	public String getUrlName()
 	{
 		return "customIcon";
@@ -76,7 +74,7 @@ public class CustomIconAction implements Action
 
 	/**
 	 * Handles the action call.
-	 * 
+	 *
 	 * @param req  the stapler request
 	 * @param rsp  the stapler response
 	 */
@@ -104,7 +102,7 @@ public class CustomIconAction implements Action
 
 	/**
 	 * Resizes the icon image or gets it from cache.
-	 * 
+	 *
 	 * @param url  the original image URL
 	 * @param size  the requested size
 	 * @return  the resized image data
@@ -113,7 +111,7 @@ public class CustomIconAction implements Action
 	{
 		if (cache.get(size) != null) {
 			return cache.get(size);
-		} 
+		}
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		ImageUtils.resize(url.openStream(), out, size);
 		cache.put(size, out.toByteArray());
